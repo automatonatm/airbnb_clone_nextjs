@@ -11,11 +11,21 @@ import { FcGoogle } from 'react-icons/fc';
 import useRegisterModal from '@/app/hooks/useRegisterModal';
 import { useState } from 'react';
 import Modal from './Modal';
+import Heading from '../Heading';
+
+import { onClose } from '@/app/store/features/registerSlice';
+
+import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 
 const RegisterModal = () => {
-  const registerModal = useRegisterModal();
+
+ 
 
   const [loading, setIsLoading] = useState(false);
+
+  const dispatch = useAppDispatch();
+
+  const {isOpen} = useAppSelector((state) => state.registerReducer);
 
   const {
     register,
@@ -35,7 +45,7 @@ const RegisterModal = () => {
     setIsLoading(true);
 
     axios.post('/api/register', data).then(() => {
-      registerModal.onClose();
+      dispatch(onClose())
     })
     .catch((error) => {console.log(error)})
     .finally(() => {
@@ -45,12 +55,20 @@ const RegisterModal = () => {
 
   };
 
+  const bodyContent = (
+    <div className="flex flex-col gap-4">
+      <Heading/>
+    </div>
+  )
+
   return (
     <Modal
       disabled={loading}
-      isOpen={registerModal.isOpen}
+      isOpen={isOpen}
       title="Register"
-      onSubmit={handleSubmit(onSubmit)}
+      onClose={() => dispatch(onClose())}
+      onSubmit={() => handleSubmit(onSubmit)}
+      body={bodyContent}
     />
   );
 };
