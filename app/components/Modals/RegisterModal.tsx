@@ -8,14 +8,15 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 import { FcGoogle } from 'react-icons/fc';
 
-import useRegisterModal from '@/app/hooks/useRegisterModal';
 import { useState } from 'react';
+
 import Modal from './Modal';
 import Heading from '../Heading';
 
 import { onClose } from '@/app/store/features/registerSlice';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
+import Input from '../inputs/Input';
 
 const RegisterModal = () => {
 
@@ -57,9 +58,18 @@ const RegisterModal = () => {
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
-      <Heading/>
+      <Heading title="Welcome to Airbnb" subtitle="Create an account!" />
+      <Input
+        register={register}
+        id="email"
+        disabled={loading}
+        required
+        errors={errors}
+        label="Email"
+        
+      />
     </div>
-  )
+  );
 
   return (
     <Modal
@@ -69,6 +79,7 @@ const RegisterModal = () => {
       onClose={() => dispatch(onClose())}
       onSubmit={() => handleSubmit(onSubmit)}
       body={bodyContent}
+      actionLabel="Continue"
     />
   );
 };
