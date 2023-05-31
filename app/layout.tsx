@@ -4,7 +4,8 @@ import Navbar from './components/navbar/Navbar';
 import './globals.css';
 import { Nunito } from 'next/font/google';
 
-import { Providers } from '@/app/store/provider';
+import { ReduxProviders } from '@/app/providers/ReduxProvider';
+import ToasterProvider from './providers/ToasterProvider';
 
 export const metadata = {
   title: 'Airbnb',
@@ -23,13 +24,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={font.className}>
-        <Providers>
-        <ClientOnly>
-         <RegisterModal />
-          <Navbar />
-        </ClientOnly>
-        {children}
-        </Providers>
+        <ReduxProviders>
+          <ClientOnly>
+            <ToasterProvider/>
+            <RegisterModal />
+            <Navbar />
+          </ClientOnly>
+          {children}
+        </ReduxProviders>
       </body>
     </html>
   );

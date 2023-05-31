@@ -53,6 +53,7 @@ const Modal: React.FC<ModalProps> = ({
       return;
     }
 
+    
     onSubmit();
   }, [disabled, onSubmit]);
 
@@ -170,6 +171,7 @@ const Modal: React.FC<ModalProps> = ({
                     label={actionLabel}
                   />
                 </div>
+                {footer}
               </div>
             </div>
           </div>

@@ -17,6 +17,8 @@ import { onClose } from '@/app/store/features/registerSlice';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import Input from '../inputs/Input';
+import { toast } from 'react-hot-toast';
+import Button from '../Button';
 
 const RegisterModal = () => {
 
@@ -41,14 +43,18 @@ const RegisterModal = () => {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
-
+     
+     const notification = toast.loading('Creating account...');
+ 
 
     setIsLoading(true);
 
     axios.post('/api/register', data).then(() => {
       dispatch(onClose())
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+      toast.error("Something went wrong", {id: notification})
+    })
     .finally(() => {
       setIsLoading(false)
     })
@@ -66,8 +72,51 @@ const RegisterModal = () => {
         required
         errors={errors}
         label="Email"
-        
       />
+
+      <Input
+        register={register}
+        id="name"
+        disabled={loading}
+        required
+        errors={errors}
+        label="Name"
+      />
+
+      <Input
+        register={register}
+        id="password"
+        disabled={loading}
+        required
+        type="password"
+        errors={errors}
+        label="Password"
+      />
+    </div>
+  );
+
+  const footerContent = (
+    <div className="mt-4 flex flex-col gap-4">
+      <hr />
+      <Button
+        outline
+        label="Continue with Google"
+        icon={FcGoogle}
+        onClick={() => {}}
+      />
+      <Button
+        outline
+        label="Continue with Github"
+        icon={AiFillGithub}
+        onClick={() => {}}
+      />
+
+      <div className="text-neutral-500 text-center mt-4 font-light">
+        <div className="flex flex-row justify-center gap-2 text-center">
+          <div>Already have an account?</div>
+          <div className="text-neutral-500 cursor-pointer hover:underline" onClick={() => dispatch(onClose())}>Login</div>
+        </div>
+      </div>
     </div>
   );
 
@@ -77,8 +126,9 @@ const RegisterModal = () => {
       isOpen={isOpen}
       title="Register"
       onClose={() => dispatch(onClose())}
-      onSubmit={() => handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
+      footer={footerContent}
       actionLabel="Continue"
     />
   );
