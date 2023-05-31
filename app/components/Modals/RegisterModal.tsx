@@ -50,6 +50,7 @@ const RegisterModal = () => {
     setIsLoading(true);
 
     axios.post('/api/register', data).then(() => {
+      toast.success('Account created', { id: notification });
       dispatch(onClose())
     })
     .catch((error) => {

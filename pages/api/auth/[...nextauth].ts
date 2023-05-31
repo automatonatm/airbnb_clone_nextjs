@@ -1,12 +1,10 @@
-import prisma from '@/libs/prismadb';
+import prisma from '@/app/libs/prismadb';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import NextAuth, { AuthOptions } from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import bycrpt from "bcrypt"
-
-
+import bycrpt from 'bcrypt';
 
 const authOptions: AuthOptions = {
   adapter: PrismaAdapter(prisma),
@@ -28,46 +26,42 @@ const authOptions: AuthOptions = {
         password: { label: 'password', type: 'password' },
       },
       async authorize(credentials) {
+        if (!credentials?.email || !credentials?.email) {
+          throw new Error('Invalid credentials');
+        }
 
-         if(!credentials?.email || !credentials?.email) {
-            throw new Error("Invalid credentials")
-         }
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials.email,
+          },
+        });
 
-         const user = await prisma.user.findUnique({
-            where: {
-                email: credentials.email,
-            }
-         })
+        if (!user || !user?.hashedPassword) {
+          throw new Error('Invalid credentials');
+        }
 
-         if (!user || !user?.hashedPassword) {
-           throw new Error('Invalid credentials');
-         }
+        const isCorrectPassword = await bycrpt.compare(
+          credentials.password,
+          user.hashedPassword
+        );
 
+        if (!isCorrectPassword) {
+          throw new Error('Invalid credentials');
+        }
 
-         const isCorrectPassword = await bycrpt.compare(credentials.password, user.hashedPassword)
-
-
-          if (!isCorrectPassword) {
-            throw new Error('Invalid credentials');
-          }
-
-          return user;
-
-
-      }
+        return user;
+      },
     }),
   ],
 
   pages: {
-     signIn: '/'
+    signIn: '/',
   },
   debug: process.env.NODE_ENV === 'development',
   session: {
-    strategy: "jwt"     
+    strategy: 'jwt',
   },
-  secret: process.env.NEXTAUTH_SECRET
-  
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
-
-export default NextAuth(authOptions)
+export default NextAuth(authOptions);
