@@ -6,6 +6,7 @@ import { Nunito } from 'next/font/google';
 
 import { ReduxProviders } from '@/app/providers/ReduxProvider';
 import ToasterProvider from './providers/ToasterProvider';
+import LoginModal from './components/Modals/LoginModal';
 
 export const metadata = {
   title: 'Airbnb',
@@ -28,6 +29,7 @@ export default function RootLayout({
           <ClientOnly>
             <ToasterProvider/>
             <RegisterModal />
+            <LoginModal />
             <Navbar />
           </ClientOnly>
           {children}
