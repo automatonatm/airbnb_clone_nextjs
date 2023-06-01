@@ -25,7 +25,6 @@ export default async function getCurrentUser() {
         return null
     }
 
-    delete currentUser?.hashedPassword
 
 
     return {
