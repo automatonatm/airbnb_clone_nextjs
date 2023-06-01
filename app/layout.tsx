@@ -7,6 +7,7 @@ import { Nunito } from 'next/font/google';
 import { ReduxProviders } from '@/app/providers/ReduxProvider';
 import ToasterProvider from './providers/ToasterProvider';
 import LoginModal from './components/Modals/LoginModal';
+import getCurrentUser from './actions/getCurrentUser';
 
 export const metadata = {
   title: 'Airbnb',
@@ -17,11 +18,14 @@ const font = Nunito({
   subsets: ['latin'],
 });
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+
+  const currentUser = await getCurrentUser()
+
   return (
     <html lang="en">
       <body className={font.className}>
@@ -30,8 +34,8 @@ export default function RootLayout({
             <ToasterProvider/>
             <RegisterModal />
             <LoginModal />
-            <Navbar />
-          </ClientOnly>
+            <Navbar currentUser={currentUser} />
+          </ClientOnly>   
           {children}
         </ReduxProviders>
       </body>
