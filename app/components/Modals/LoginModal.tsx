@@ -8,14 +8,20 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 import { FcGoogle } from 'react-icons/fc';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { signIn } from 'next-auth/react';
 
 import Modal from './Modal';
 import Heading from '../Heading';
 
-import { onClose } from '@/app/store/features/loginSlice';
+
+
+
+import {
+  onCloseLoginModal,
+  onOpenRegisterModal,
+} from '@/app/store/features/modalSlice';
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import Input from '../inputs/Input';
@@ -30,7 +36,7 @@ const LoginModal = () => {
 
   const router = useRouter();
 
-  const { isOpen } = useAppSelector((state) => state.loginReducer);
+  const { isOpenLoginModal } = useAppSelector((state) => state.modalReducer);
 
   const {
     register,
@@ -44,6 +50,7 @@ const LoginModal = () => {
   });
 
   const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    
     const notification = toast.loading('Login...');
 
     setIsLoading(true);
@@ -57,7 +64,7 @@ const LoginModal = () => {
 
         if (callback?.ok) {
           toast.success(`You're logged in`, { id: notification });
-          dispatch(onClose());
+          dispatch(onCloseLoginModal());
           router.refresh();
         }
 
@@ -71,6 +78,12 @@ const LoginModal = () => {
       })
       
   };
+
+
+  const toggle = useCallback(() => {
+      dispatch(onCloseLoginModal())
+      dispatch(onOpenRegisterModal())
+  }, [dispatch])
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -114,10 +127,10 @@ const LoginModal = () => {
 
       <div className="mt-4 text-center font-light text-neutral-500">
         <div className="flex flex-row justify-center gap-2 text-center">
-          <div>I dont have an account?</div>
+          <div>First time using airbnb?</div>
           <div
             className="cursor-pointer text-neutral-500 hover:underline"
-            onClick={() => dispatch(onClose())}
+            onClick={toggle}
           >
             Register
           </div>
@@ -129,9 +142,9 @@ const LoginModal = () => {
   return (
     <Modal
       disabled={loading}
-      isOpen={isOpen}
+      isOpen={isOpenLoginModal}
       title="Login"
-      onClose={() => dispatch(onClose())}
+      onClose={() => dispatch(onCloseLoginModal())}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}

@@ -8,7 +8,7 @@ interface LoginState {
 const initialState = {
     isOpen: false
 }  as LoginState
-
+ 
 
  const loginSlice = createSlice({
   name: 'login',

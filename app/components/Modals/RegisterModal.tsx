@@ -8,12 +8,15 @@ import { FieldValues, SubmitHandler, useForm } from 'react-hook-form';
 
 import { FcGoogle } from 'react-icons/fc';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import Modal from './Modal';
 import Heading from '../Heading';
 
-import { onClose } from '@/app/store/features/registerSlice';
+
+import { onCloseRegisterModal, onOpenLoginModal } from '@/app/store/features/modalSlice';
+
+
 
 import { useAppDispatch, useAppSelector } from '@/app/store/hooks';
 import Input from '../inputs/Input';
@@ -30,7 +33,7 @@ const RegisterModal = () => {
 
   const dispatch = useAppDispatch();
 
-  const {isOpen} = useAppSelector((state) => state.registerReducer);
+  const {isOpenRegisterModal} = useAppSelector((state) => state.modalReducer);
 
   const {
     register,
@@ -53,7 +56,7 @@ const RegisterModal = () => {
 
     axios.post('/api/register', data).then(() => {
       toast.success('Account created', { id: notification });
-      dispatch(onClose())
+      dispatch(onCloseRegisterModal())
     })
     .catch((error) => {
       toast.error("Something went wrong", {id: notification})
@@ -64,6 +67,11 @@ const RegisterModal = () => {
     ;
 
   };
+
+   const toggle = useCallback(() => {
+     dispatch(onCloseRegisterModal());
+     dispatch(onOpenLoginModal());
+   }, [dispatch]);
 
   const bodyContent = (
     <div className="flex flex-col gap-4">
@@ -119,7 +127,7 @@ const RegisterModal = () => {
           <div>Already have an account?</div>
           <div
             className="cursor-pointer text-neutral-500 hover:underline"
-            onClick={() => dispatch(onClose())}
+            onClick={toggle}
           >
             Login
           </div>
@@ -128,12 +136,14 @@ const RegisterModal = () => {
     </div>
   );
 
+  
+
   return (
     <Modal
       disabled={loading}
-      isOpen={isOpen}
+      isOpen={isOpenRegisterModal}
       title="Register"
-      onClose={() => dispatch(onClose())}
+      onClose={() => dispatch(onCloseRegisterModal())}
       onSubmit={handleSubmit(onSubmit)}
       body={bodyContent}
       footer={footerContent}

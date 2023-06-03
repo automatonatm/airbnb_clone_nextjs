@@ -1,11 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import registerReducer from "./features/registerSlice"
-import loginReducer from './features/loginSlice';
+import modalReducer from './features/modalSlice';
 
 export const store = configureStore({
   reducer: {
-    registerReducer,
-    loginReducer,
+    modalReducer
   },
   devTools: process.env.NODE_ENV !== 'production',
 });

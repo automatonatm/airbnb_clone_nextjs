@@ -1,16 +1,14 @@
 'use client';
-import { User } from '@prisma/client';
+
 import { AiOutlineMenu } from 'react-icons/ai';
 import Avatar from '../Avatar';
 import { useCallback, useState } from 'react';
 
-import {signOut} from "next-auth/react"
+import { signOut } from 'next-auth/react';
 
 import MenuItem from './MenuItem';
 
-import { onOpen } from '@/app/store/features/registerSlice';
-
-import { onOpen as onOpenLogin } from '@/app/store/features/loginSlice';
+import { onOpenLoginModal, onOpenRegisterModal, onOpenRentModal } from '@/app/store/features/modalSlice';
 
 import { useAppDispatch } from '@/app/store/hooks';
 import { SafeUser } from '@/app/types';
@@ -26,15 +24,30 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const dispatch = useAppDispatch();
 
   const toggleOpen = useCallback(() => {
-    setIsOpen((prevState) => !prevState);
+    
+    setIsOpen((value) => !value);
   }, []);
+
+  const onRent = useCallback(() => {
+    if (!currentUser) {
+      return dispatch(onOpenLoginModal())
+    }
+
+    //Open Rent modal
+
+    dispatch(onOpenRentModal())
+
+    
+  }, [currentUser, dispatch]);
+
+
 
   return (
     <div className="relative">
       <div className="flex flex-row items-center gap-3">
         <div
           className="hidden cursor-pointer rounded-full px-4 py-3 text-sm font-semibold transition hover:bg-neutral-100 md:block"
-          onClick={() => {}}
+          onClick={onRent}
         >
           Airbnb your home
         </div>
@@ -60,18 +73,18 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
                   <MenuItem onClick={() => {}} label="My favorite" />
                   <MenuItem onClick={() => {}} label="My reservations" />
                   <MenuItem onClick={() => {}} label="My propertions" />
-                  <MenuItem onClick={() => {}} label="Airbnb my home" />
+                  <MenuItem onClick={() => {dispatch(onOpenRentModal())}} label="Airbnb my home" />
                   <hr />
                   <MenuItem onClick={() => signOut()} label="Logout" />
                 </>
               ) : (
                 <>
                   <MenuItem
-                    onClick={() => dispatch(onOpenLogin())}
+                    onClick={() => dispatch(onOpenLoginModal())}
                     label="Login"
                   />
                   <MenuItem
-                    onClick={() => dispatch(onOpen())}
+                    onClick={() => dispatch(onOpenRegisterModal())}
                     label="Sign up"
                   />
                 </>

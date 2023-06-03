@@ -8,6 +8,7 @@ import { ReduxProviders } from '@/app/providers/ReduxProvider';
 import ToasterProvider from './providers/ToasterProvider';
 import LoginModal from './components/Modals/LoginModal';
 import getCurrentUser from './actions/getCurrentUser';
+import RentModal from './components/Modals/RentModal';
 
 export const metadata = {
   title: 'Airbnb',
@@ -32,6 +33,7 @@ export default async function RootLayout({
         <ReduxProviders>
           <ClientOnly>
             <ToasterProvider/>
+            <RentModal/>
             <RegisterModal />
             <LoginModal />
             <Navbar currentUser={currentUser} />
