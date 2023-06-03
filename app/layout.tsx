@@ -10,6 +10,8 @@ import LoginModal from './components/Modals/LoginModal';
 import getCurrentUser from './actions/getCurrentUser';
 import RentModal from './components/Modals/RentModal';
 
+import { Analytics } from '@vercel/analytics/react';
+
 export const metadata = {
   title: 'Airbnb',
   description: 'Airbnb clone',
@@ -32,14 +34,15 @@ export default async function RootLayout({
       <body className={font.className}>
         <ReduxProviders>
           <ClientOnly>
-            <ToasterProvider/>
-            <RentModal/>
+            <ToasterProvider />
+            <RentModal />
             <RegisterModal />
             <LoginModal />
             <Navbar currentUser={currentUser} />
-          </ClientOnly>   
+          </ClientOnly>
           {children}
         </ReduxProviders>
+        <Analytics />
       </body>
     </html>
   );
