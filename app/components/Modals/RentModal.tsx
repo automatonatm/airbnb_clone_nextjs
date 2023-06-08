@@ -1,4 +1,5 @@
 'use client';
+
 import { useAppSelector, useAppDispatch } from '@/app/store/hooks';
 import Modal from './Modal';
 import { onCloseRentModal } from '@/app/store/features/modalSlice';
@@ -7,6 +8,9 @@ import Heading from '../Heading';
 import { categories } from '../navbar/Categories';
 import CategoryInput from '../inputs/CategoryInput';
 import { FieldValues, useForm } from 'react-hook-form';
+import CountrySelect from '../inputs/CountrySelect';
+import dynamic from 'next/dynamic';
+
 
 enum STEPS {
   CATEGORY = 0,
@@ -49,6 +53,13 @@ const RentModal = () => {
 
   // watch the category
   const category = watch('category');
+  const location = watch('location');
+
+  const Map = useMemo(() => dynamic(() => import('../Map'), {
+    ssr: false
+  }), [location])
+
+
 
 
 
@@ -125,6 +136,27 @@ const RentModal = () => {
     </div>
   );
 
+
+  if(step === STEPS.LOCATION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+          <Heading title="Where is your place?" subtitle="Help guests find you!" />
+
+        {/* Select Input */}
+       <CountrySelect
+          onChange={(location) => setCustomValue('location', location)}
+          value={location}
+       />
+
+       {/* Map */}
+       <Map center={location?.latlng} />
+
+      </div>
+    ) 
+  }
+
+
+
   return (
     <Modal
       title="Airbnb your home"
@@ -133,9 +165,7 @@ const RentModal = () => {
       onClose={() => {
         dispatch(onCloseRentModal());
       }}
-      onSubmit={() => {
-        dispatch(onCloseRentModal());
-      }}
+      onSubmit={onNext}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
       // If step = 0 dont show button
