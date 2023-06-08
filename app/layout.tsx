@@ -42,7 +42,7 @@ export default async function RootLayout({
           </ClientOnly>
           {children}
         </ReduxProviders>
-        <Analytics />
+        {process.env.NODE_ENV !== 'development' && <Analytics />}
       </body>
     </html>
   );

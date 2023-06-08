@@ -29,23 +29,25 @@ const CategoryBox: React.FC<CategoryBoxProp> = ({
 
     let currentQuery = {}
 
+    
+    //  If a param already exists parse it
     if(params) {
         currentQuery = qs.parse(params.toString())
     }
 
-  
 
+    //add the query 
     const updatedQuery: any = {
       ...currentQuery,
       category: label
     }
 
    
-
-
     if(params?.get('category') === label) {
       delete updatedQuery.category
     }
+
+
 
     const url = qs.stringifyUrl({
       url: '/',
@@ -53,11 +55,9 @@ const CategoryBox: React.FC<CategoryBoxProp> = ({
     }, {skipNull: true})
 
 
-    
-
+  
     router.push(url)
 
-  
 
   }, [params, label, router]);
 
