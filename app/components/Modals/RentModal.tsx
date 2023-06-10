@@ -10,7 +10,7 @@ import CategoryInput from '../inputs/CategoryInput';
 import { FieldValues, useForm } from 'react-hook-form';
 import CountrySelect from '../inputs/CountrySelect';
 import dynamic from 'next/dynamic';
-
+import Counter from '../inputs/Counter';
 
 enum STEPS {
   CATEGORY = 0,
@@ -54,15 +54,19 @@ const RentModal = () => {
   // watch the category
   const category = watch('category');
   const location = watch('location');
+  const guestCount = watch('guestCount');
+  const roomCount = watch('roomCount');
+  const bathroomCount = watch('bathroomCount');
 
-  const Map = useMemo(() => dynamic(() => import('../Map'), {
-    ssr: false
-  }), [location])
+  const Map = useMemo(
+    () =>
+      dynamic(() => import('../Map'), {
+        ssr: false,
+      }),
+    [location]
+  );
 
-
-
-
-
+  //Change or set the value of a form field
   const setCustomValue = (id: string, value: any) => {
     setValue(id, value, {
       shouldDirty: true,
@@ -70,8 +74,6 @@ const RentModal = () => {
       shouldValidate: true,
     });
   };
-
-    
 
   //When back is click subtract step
   const onBack = () => {
@@ -125,7 +127,9 @@ const RentModal = () => {
         {categories.map((item) => (
           <div key={item.label} className="col-span-1">
             <CategoryInput
-              onClick={(category) => {setCustomValue('category', category)}}
+              onClick={(category) => {
+                setCustomValue('category', category);
+              }}
               selected={category === item.label}
               label={item.label}
               icon={item.icon}
@@ -136,26 +140,62 @@ const RentModal = () => {
     </div>
   );
 
-
-  if(step === STEPS.LOCATION) {
+  if (step === STEPS.LOCATION) {
     bodyContent = (
       <div className="flex flex-col gap-8">
-          <Heading title="Where is your place?" subtitle="Help guests find you!" />
+        <Heading
+          title="Where is your place?"
+          subtitle="Help guests find you!"
+        />
 
         {/* Select Input */}
-       <CountrySelect
+        <CountrySelect
           onChange={(location) => setCustomValue('location', location)}
           value={location}
-       />
+        />
 
-       {/* Map */}
-       <Map center={location?.latlng} />
-
+        {/* Map */}
+        <Map center={location?.latlng} />
       </div>
-    ) 
+    );
   }
 
+  if (step === STEPS.INFO) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Share some basics about your place"
+          subtitle="What amenities do you have?"
+        />
 
+        {/* Counter */}
+        <Counter
+          title="Guests"
+          subtitle="How many guests do you allow?"
+          value={guestCount}
+          onChange={(value) => setCustomValue('guestCount', value)}
+        />
+
+        <hr />
+
+        <Counter
+          title="Rooms"
+          subtitle="How many rooms do you have?"
+          value={roomCount}
+          onChange={(value) => setCustomValue('roomCount', value)}
+        />
+
+        <hr />
+
+        <Counter
+          title="Bathrooms"
+          subtitle="How many bathrooms to you have?"
+          value={bathroomCount}
+          onChange={(value) => setCustomValue('bathroomCount', value)}
+        />
+      </div>
+    );
+  }
 
   return (
     <Modal
