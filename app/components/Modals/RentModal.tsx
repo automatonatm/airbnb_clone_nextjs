@@ -7,10 +7,15 @@ import { useMemo, useState } from 'react';
 import Heading from '../Heading';
 import { categories } from '../navbar/Categories';
 import CategoryInput from '../inputs/CategoryInput';
-import { FieldValues, useForm } from 'react-hook-form';
+import { FieldValues, useForm, SubmitHandler } from 'react-hook-form';
 import CountrySelect from '../inputs/CountrySelect';
 import dynamic from 'next/dynamic';
 import Counter from '../inputs/Counter';
+import ImageUpload from '../inputs/ImageUpload';
+import Input from '../inputs/Input';
+import axios from 'axios';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 enum STEPS {
   CATEGORY = 0,
@@ -25,9 +30,13 @@ const RentModal = () => {
   //Current step is 0
   const [step, setStep] = useState(STEPS.CATEGORY);
 
+  const [isLoading, setIsLoading] = useState(false);
+
   const { isOpenRentModal } = useAppSelector((state) => state.modalReducer);
 
   const dispatch = useAppDispatch();
+
+  const router = useRouter();
 
   //Initialize form and it fields
   const {
@@ -57,6 +66,7 @@ const RentModal = () => {
   const guestCount = watch('guestCount');
   const roomCount = watch('roomCount');
   const bathroomCount = watch('bathroomCount');
+  const imageSrc = watch('imageSrc');
 
   const Map = useMemo(
     () =>
@@ -83,6 +93,39 @@ const RentModal = () => {
   //When Next is click add step
   const onNext = () => {
     setStep((value) => value + 1);
+  };
+
+  const onSubmit: SubmitHandler<FieldValues> = (data) => {
+    //If step is not the PTICE STEP run the next function on button click
+    if (step !== STEPS.PRICE) {
+      return onNext();
+    }
+
+    setIsLoading(true);
+
+    const notification = toast.loading('Login...');
+
+
+    //submit data
+    axios
+      .post('/api/listings', data)
+      .then((callback: any) => {
+
+       
+          toast.success(`Listing created`, { id: notification });
+          router.refresh();
+          reset()
+          setStep(STEPS.CATEGORY);
+          dispatch(onCloseRentModal());
+       
+      })
+      .catch((error) => {
+        toast.error('An unknown error has occured', { id: notification });
+      })
+      .finally(() => {
+         setIsLoading(false);
+      })
+      ;
   };
 
   //Show this text on action label
@@ -197,6 +240,75 @@ const RentModal = () => {
     );
   }
 
+  if (step === STEPS.IMAGES) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Add a photo of your place"
+          subtitle="Show guests what your place looks like"
+        />
+
+        <ImageUpload
+          value={imageSrc}
+          onChange={(value) => setCustomValue('imageSrc', value)}
+        />
+      </div>
+    );
+  }
+
+  if (step === STEPS.DESCRIPTION) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="How would you decribe your place"
+          subtitle="Short are sweet works best"
+        />
+
+        <Input
+          id="title"
+          label="Title"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+
+        <hr />
+
+        <Input
+          id="description"
+          label="Description"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          required
+        />
+      </div>
+    );
+  }
+
+  if (step === STEPS.PRICE) {
+    bodyContent = (
+      <div className="flex flex-col gap-8">
+        <Heading
+          title="Now, set the price"
+          subtitle="How much you charge per night?"
+        />
+
+        <Input
+          id="price"
+          label="Price"
+          type="number"
+          disabled={isLoading}
+          register={register}
+          errors={errors}
+          formatPrice
+          required
+        />
+      </div>
+    );
+  }
+
   return (
     <Modal
       title="Airbnb your home"
@@ -205,9 +317,10 @@ const RentModal = () => {
       onClose={() => {
         dispatch(onCloseRentModal());
       }}
-      onSubmit={onNext}
+      onSubmit={handleSubmit(onSubmit)}
       actionLabel={actionLabel}
       secondaryActionLabel={secondaryActionLabel}
+      disabled={isLoading}
       // If step = 0 dont show button
       secondaryAction={step === STEPS.CATEGORY ? undefined : onBack}
     />
