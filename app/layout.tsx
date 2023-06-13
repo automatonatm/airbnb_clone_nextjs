@@ -26,8 +26,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-
-  const currentUser = await getCurrentUser()
+  const currentUser = await getCurrentUser();
 
   return (
     <html lang="en">
@@ -40,7 +39,9 @@ export default async function RootLayout({
             <LoginModal />
             <Navbar currentUser={currentUser} />
           </ClientOnly>
-          {children}
+          <div className="pb-20 pt-28">
+            {children}
+            </div>
         </ReduxProviders>
         {process.env.NODE_ENV !== 'development' && <Analytics />}
       </body>
