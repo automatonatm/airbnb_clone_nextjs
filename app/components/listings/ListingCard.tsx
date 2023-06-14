@@ -8,12 +8,13 @@ import { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
 import Image from 'next/image';
 import HeartButton from '../HeartButton';
+import Button from '../Button';
 
 interface ListingCardProps {
   data: Listing;
   reservation?: Reservation;
   onAction?: (id: string) => void;
-  disaabled?: boolean;
+  disabled?: boolean;
   actionLabel?: string;
   actionId?: string;
   currentUser?: SafeUser | null;
@@ -22,7 +23,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
   data,
   reservation,
   onAction,
-  disaabled,
+  disabled,
   actionLabel,
   actionId = '',
   currentUser,
@@ -37,13 +38,13 @@ const ListingCard: React.FC<ListingCardProps> = ({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
 
-      if (disaabled) {
+      if (disabled) {
         return;
       }
 
       onAction?.(actionId);
     },
-    [actionId, disaabled, onAction]
+    [actionId, disabled, onAction]
   );
 
   const price = useMemo(() => {
@@ -84,6 +85,28 @@ const ListingCard: React.FC<ListingCardProps> = ({
             <HeartButton listingId={data.id} currentUser={currentUser} />
           </div>
         </div>
+
+        <div className="text-lg font-semibold">
+          {location?.region}, {location?.label}
+        </div>
+
+        <div className="font-light text-neutral-500">
+          {reservationDate || data.category}
+        </div>
+
+        <div className="flex flex-row items-center gap-1">
+          <div className="font-semibold">$ {price}</div>
+          {!reservation && <div className="font-light">night</div>}
+        </div>
+
+        {onAction && actionLabel && (
+          <Button
+            disable={disabled}
+            small
+            label={actionLabel}
+            onClick={handleCancel}
+          />
+        )}
       </div>
     </div>
   );
