@@ -36,6 +36,7 @@ const Modal: React.FC<ModalProps> = ({
     setShowModal(isOpen);
   }, [isOpen]);
 
+  
   const handleClose = useCallback(() => {
     if (disabled) {
       return;
