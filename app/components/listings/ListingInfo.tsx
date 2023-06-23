@@ -7,9 +7,9 @@ import { IconType } from "react-icons"
 import ListingCategory from "@/app/components/listings/ListingCategory"
 import dynamic from "next/dynamic"
 
-const Map = dynamic(() => import("../Map"), {
-    ssr: false
-}) 
+const Map = dynamic(() => import('../Map'), {
+  ssr: false,
+});
 
 interface ListingInfoProps {
  user: SafeUser
@@ -76,22 +76,16 @@ const ListingInfo: React.FC<ListingInfoProps> = ({
       <hr />
       {category && (
         <ListingCategory
-         icon={category.icon}
-         label={category.label}
-         description={category.description}
+          icon={category.icon}
+          label={category.label}
+          description={category.description}
         />
       )}
-
       <hr />
-
-       <div className="text-lg font-light text-neutral-500">
-            {description}
-       </div>
-
-       <hr />
-
-       <Map center={coordinates}/>
-       
+      <div className="text-lg font-light text-neutral-500">{description}</div>
+      <hr />
+      {/*  @ts-ignore */}
+      <Map center={coordinates} />
     </div>
   );
 }

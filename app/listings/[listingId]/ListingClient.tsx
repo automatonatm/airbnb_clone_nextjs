@@ -13,9 +13,10 @@ import { useAppDispatch } from '@/app/store/hooks';
 import { useRouter } from 'next/navigation';
 import { differenceInCalendarDays, eachDayOfInterval } from 'date-fns';
 import axios from 'axios';
-import toast from 'react-hot-toast';
-import { error } from 'console';
-import { difference } from 'next/dist/build/utils';
+import {toast} from 'react-hot-toast';
+
+import { ListingReservation } from '@/app/components/listings/ListingReservation';
+import { Range } from 'react-date-range';
 
 const initialDateRange = {
   startDate: new Date(),
@@ -28,7 +29,6 @@ interface ListingClientProps {
   listing: SafeListing & {
     user: SafeUser;
   };
-
   currentUser?: SafeUser | null;
 }
 
@@ -44,7 +44,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
 
   const [isLoading, setIsLoading] = useState(false)
   const [totalPrice, setTotalPrice] = useState(listing.price)
-  const [dateRange, setDateRange] = useState(initialDateRange)
+  const [dateRange, setDateRange] = useState<Range>(initialDateRange)
 
 
   useEffect(() => {
@@ -88,41 +88,48 @@ const ListingClient: React.FC<ListingClientProps> = ({
   }, [reservations]);
 
 
-  const createReservation = useCallback(() => {
-    if(!currentUser) {
+  const onCreateReservation = useCallback(() => {
+    if (!currentUser) {
       return dispatch(onOpenLoginModal());
     }
 
-    setIsLoading(true)
+    setIsLoading(true);
 
-     const notification = toast.loading('Creating reservation...');
+    const notification = toast.loading('Creating reservation...');
 
-    
-    axios.post('/api/reservation', {
-      totalPrice, 
-      startDate: dateRange.startDate,
-      endDate: dateRange.endDate,
-      listingId: listing.id
-    })
-    .then(() => {
-      toast.success(`Listing reserved`, { id: notification });
-      setDateRange(initialDateRange)
-      //redirect to /trip
-      router.refresh()
-    })
-    .catch(() => {
-      toast.error(`Something went wrong`, { id: notification });
-    })
-    .finally(() => {
-      setIsLoading(false)
-    })
+    axios
+      .post('/api/reservation', {
+        totalPrice,
+        startDate: dateRange.startDate,
+        endDate: dateRange.endDate,
+        listingId: listing.id,
+      })
+      .then(() => {
+        toast.success(`Listing reserved`, { id: notification });
+        setDateRange(initialDateRange);
+        //redirect to /trip
+        router.refresh();
+      })
+      .catch(() => {
+        toast.error(`Something went wrong`, { id: notification });
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [
+    currentUser,
+    dateRange.endDate,
+    dateRange.startDate,
+    dispatch,
+    listing.id,
+    router,
+    totalPrice,
+  ]);
 
-  
-  }, [currentUser, dateRange.endDate, dateRange.startDate, dispatch, listing.id, router, totalPrice])
 
 
 
-
+  //Get all the categories and amd match it with this listing category
   const category = useMemo(() => {
     return categories.find((item) => item.label === listing.category);
   }, [listing.category]);
@@ -140,7 +147,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
           />
           <div
             className="
-                  md:gap:10
+                  md:gap-10
                   mt-6
                   grid
                   grid-cols-1
@@ -156,6 +163,18 @@ const ListingClient: React.FC<ListingClientProps> = ({
               bathroomCount={listing.bathroomCount}
               locationValue={listing.locationValue}
             />
+
+            <div className="order-first mb-10 md:order-last md:col-span-3">
+              <ListingReservation
+                price={listing.price}
+                totalPrice={totalPrice}
+                dateRange={dateRange}
+                onSubmit={onCreateReservation}
+                onChangeDate={(value) => setDateRange(value)}
+                disabledDates={disabledDates}
+                disabled={isLoading}
+              />
+            </div>
           </div>
         </div>
       </div>

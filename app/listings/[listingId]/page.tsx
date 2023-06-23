@@ -1,7 +1,6 @@
 import getCurrentUser from '@/app/actions/getCurrentUser';
 import getListingById from '@/app/actions/getListing';
 import ClientOnly from '@/app/components/ClientOnly';
-import Container from '@/app/components/Container';
 import EmptyState from '@/app/components/EmptyState';
 import ListingClient from './ListingClient';
 
@@ -27,7 +26,7 @@ const ListingPage = async ({params}: {params: IParams}) => {
   return (
   
       <ClientOnly>
-        <ListingClient listing={listing} currentUser={currentUser}/>
+        <ListingClient listing={listing} currentUser={currentUser} />
       </ClientOnly>
   )
 }
