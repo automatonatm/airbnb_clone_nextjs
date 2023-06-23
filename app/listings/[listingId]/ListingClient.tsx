@@ -98,7 +98,7 @@ const ListingClient: React.FC<ListingClientProps> = ({
     const notification = toast.loading('Creating reservation...');
 
     axios
-      .post('/api/reservation', {
+      .post('/api/reservations', {
         totalPrice,
         startDate: dateRange.startDate,
         endDate: dateRange.endDate,
