@@ -19,6 +19,8 @@ const ReservationsPage = async () => {
     authorId: currentUser.id,
   });
 
+ 
+
   if (reservations.length === 0) {
     return (
       <ClientOnly>

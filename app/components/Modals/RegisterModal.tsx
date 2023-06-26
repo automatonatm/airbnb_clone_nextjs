@@ -56,7 +56,8 @@ const RegisterModal = () => {
 
     axios.post('/api/register', data).then(() => {
       toast.success('Account created', { id: notification });
-      dispatch(onCloseRegisterModal())
+      dispatch(onCloseRegisterModal())  
+      dispatch(onOpenLoginModal())
     })
     .catch((error) => {
       toast.error("Something went wrong", {id: notification})
