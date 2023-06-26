@@ -40,12 +40,10 @@ const TripsClient: React.FC<TripsClientProps> = ({
         })
         .catch((err: any) => {
         
-          
+            console.log(err)
             toast.error(
               `${
-                err.response && err.response.data.message
-                  ? err.response.data.message
-                  : err.message
+                err.response && err.response.data.message ? err.response.data.message : err.message
               }`,
               { id: notification }
             );
