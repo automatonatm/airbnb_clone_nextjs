@@ -1,8 +1,8 @@
 'use client';
 
 import useCountries from '@/app/hooks/useCountries';
-import { SafeListing, SafeUser } from '@/app/types';
-import { Listing, Reservation } from '@prisma/client';
+import { SafeListing, SafeReservation, SafeUser } from '@/app/types';
+import {  Reservation } from '@prisma/client';
 import { useRouter } from 'next/navigation';
 import { useCallback, useMemo } from 'react';
 import { format } from 'date-fns';
@@ -11,8 +11,8 @@ import HeartButton from '../HeartButton';
 import Button from '../Button';
 
 interface ListingCardProps {
-  data: SafeListing;
-  reservation?: Reservation;
+  data: SafeListing
+  reservation?: SafeReservation;
   onAction?: (id: string) => void;
   disabled?: boolean;
   actionLabel?: string;
@@ -49,7 +49,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
 
   const price = useMemo(() => {
     if (reservation) {
-      reservation.totalPrice;
+      return reservation.totalPrice;
     }
 
     return data.price;
@@ -95,7 +95,7 @@ const ListingCard: React.FC<ListingCardProps> = ({
         </div>
 
         <div className="flex flex-row items-center gap-1">
-          <div className="font-semibold">$ {price}</div>
+          <div className="font-semibold">$ {price  }</div>
           {!reservation && <div className="font-light">night</div>}
         </div>
 

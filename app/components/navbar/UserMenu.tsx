@@ -13,6 +13,8 @@ import { onOpenLoginModal, onOpenRegisterModal, onOpenRentModal } from '@/app/st
 import { useAppDispatch } from '@/app/store/hooks';
 import { SafeUser } from '@/app/types';
 
+import { useRouter } from 'next/navigation';
+
 interface UserMenuProps {
   currentUser?: SafeUser | null;
 }
@@ -22,6 +24,8 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const dispatch = useAppDispatch();
+
+  const router = useRouter()
 
   const toggleOpen = useCallback(() => {
     
@@ -69,7 +73,7 @@ const UserMenu: React.FC<UserMenuProps> = ({ currentUser }) => {
             <>
               {currentUser ? (
                 <>
-                  <MenuItem onClick={() => {}} label="My trips" />
+                  <MenuItem onClick={() => router.push('/trips')} label="My trips" />
                   <MenuItem onClick={() => {}} label="My favorite" />
                   <MenuItem onClick={() => {}} label="My reservations" />
                   <MenuItem onClick={() => {}} label="My propertions" />
