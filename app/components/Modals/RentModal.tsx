@@ -103,7 +103,7 @@ const RentModal = () => {
 
     setIsLoading(true);
 
-    const notification = toast.loading('Login...');
+    const notification = toast.loading('Creating listing...');
 
 
     //submit data

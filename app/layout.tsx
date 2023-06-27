@@ -11,6 +11,7 @@ import getCurrentUser from './actions/getCurrentUser';
 import RentModal from './components/Modals/RentModal';
 
 import { Analytics } from '@vercel/analytics/react';
+import SearchModal from './components/Modals/SearchModal';
 
 export const metadata = {
   title: 'Airbnb',
@@ -34,14 +35,13 @@ export default async function RootLayout({
         <ReduxProviders>
           <ClientOnly>
             <ToasterProvider />
+            <SearchModal />
             <RentModal />
             <RegisterModal />
             <LoginModal />
             <Navbar currentUser={currentUser} />
           </ClientOnly>
-          <div className="pb-20 pt-28">
-            {children}
-            </div>
+          <div className="pb-20 pt-28">{children}</div>
         </ReduxProviders>
         {process.env.NODE_ENV !== 'development' && <Analytics />}
       </body>

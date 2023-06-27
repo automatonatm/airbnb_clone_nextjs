@@ -2,9 +2,22 @@
 
 import {BiSearch} from 'react-icons/bi'
 
+import { onOpenSearchModal } from '@/app/store/features/modalSlice';
+
+import { useAppDispatch } from '@/app/store/hooks';
+
+
+
+
+
 const Search = () => {
+
+  const dispatch = useAppDispatch();
+
   return (
-    <div className="w-full cursor-pointer rounded-full border-[1px] py-2 shadow-sm transition hover:shadow-md md:w-auto">
+    <div
+      onClick={() => dispatch(onOpenSearchModal())}
+     className="w-full cursor-pointer rounded-full border-[1px] py-2 shadow-sm transition hover:shadow-md md:w-auto">
       <div
         className="
       flex

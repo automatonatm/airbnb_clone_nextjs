@@ -4,7 +4,6 @@ import Container from '@/app/components/Container';
 import ListingHead from '@/app/components/listings/ListingHead';
 import { categories } from '@/app/components/navbar/Categories';
 import { SafeListing, SafeReservation, SafeUser } from '@/app/types';
-import { Reservation } from '@prisma/client';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import ListingInfo from '@/app/components/listings/ListingInfo';
 
@@ -18,11 +17,13 @@ import {toast} from 'react-hot-toast';
 import { ListingReservation } from '@/app/components/listings/ListingReservation';
 import { Range } from 'react-date-range';
 
+//Set the initial dates
 const initialDateRange = {
   startDate: new Date(),
   endDate: new Date(),
   key: 'selection',
 };
+
 
 interface ListingClientProps {
   reservations?: SafeReservation[] 

@@ -37,7 +37,7 @@ const PropertiesClient: React.FC<PropertiesClientProps> = ({
           router.refresh();
         })
         .catch((err: any) => {
-          console.log(err);
+         
           toast.error(
             `${
               err.response && err.response.data.message
